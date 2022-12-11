@@ -1,3 +1,35 @@
+setDate();
+var scheduledEvents = [];
+
+function setDate() {
+  $('#currentDay').text(dayjs().format('dddd[,] MMMM Do'));
+  var storedEvents = JSON.parse(localStorage.getItem("scheduledEvents"));
+  if (storedEvents !== null) {
+    scheduledEvents = storedEvents;
+  };
+
+  var currentHour = Number(dayjs().format('H'));
+  $('.time-block').each(function() {
+    var idHour = Number($(this).attr('id').replace('hour-', '')); 
+    if (idHour < currentHour) {
+      $(this).addClass('past');
+    } else if (idHour === currentHour) {
+      $(this).addClass('present');
+    } else if (idHour > currentHour) {
+      $(this).addClass('future');
+    };
+    var eventItem = scheduledEvents || [];
+    $(this).children('textarea').val(eventItem[idHour-9]);
+  });
+};
+
+$('.saveBtn').on('click', function () {
+  var idIndex = Number($(this).parent().attr('id').replace('hour-', ''))-9; 
+  scheduledEvents[idIndex]=($(this).closest('.time-block').children('textarea').val());
+  localStorage.setItem("scheduledEvents", JSON.stringify(scheduledEvents));
+  console.log(scheduledEvents);
+});
+
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
