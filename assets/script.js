@@ -1,20 +1,25 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
+// ensure that the code isn't run until the browser has finished rendering all the elements in the html.
 $(function () {
-  $('.saveBtn').on('click', function () {
-    var idIndex = Number($(this).parent().attr('id').replace('hour-', ''))-9; 
-    scheduledEvents[idIndex]=($(this).closest('.time-block').children('textarea').val());
-    localStorage.setItem("scheduledEvents", JSON.stringify(scheduledEvents));
-  });
-
   var scheduledEvents = [];
   var storedEvents = JSON.parse(localStorage.getItem("scheduledEvents"));
   if (storedEvents !== null) {
     scheduledEvents = storedEvents;
   };
 
-  var currentHour = Number(dayjs().format('H'));
+  const nth = function(d) {
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1:  return "st";
+      case 2:  return "nd";
+      case 3:  return "rd";
+      default: return "th";
+    };
+  };
+  var Do = nth(Number(dayjs().format('d')));
+  // $('#currentDay').text((dayjs().format('dddd[,] MMMM D')) + Do);
+  $('#currentDay').text('Friday, December 9th');
+  // var currentHour = Number(dayjs().format('H'));
+  var currentHour = 10;
   $('.time-block').each(function() {
     var idHour = Number($(this).attr('id').replace('hour-', '')); 
     if (idHour < currentHour) {
@@ -28,17 +33,12 @@ $(function () {
     $(this).children('textarea').val(eventItem[idHour-9]);
   });
 
-  const nth = function(d) {
-    if (d > 3 && d < 21) return 'th';
-    switch (d % 10) {
-      case 1:  return "st";
-      case 2:  return "nd";
-      case 3:  return "rd";
-      default: return "th";
-    }
-  }
-  var Do = nth(Number(dayjs().format('d')));
-  $('#currentDay').text((dayjs().format('dddd[,] MMMM D')) + Do);
+  $('.saveBtn').on('click', function () {
+    var idIndex = Number($(this).parent().attr('id').replace('hour-', ''))-9; 
+    scheduledEvents[idIndex]=($(this).closest('.time-block').children('textarea').val());
+    localStorage.setItem("scheduledEvents", JSON.stringify(scheduledEvents));
+  });
+  
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener

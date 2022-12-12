@@ -1,14 +1,26 @@
-# 05 Third-Party APIs: Work Day Scheduler
+# Module 03 Challenge - Unique Password Generator
 
-## Your Task
-
-Create a simple calendar application that allows a user to save events for each hour of the day by modifying starter code. This app will run in the browser and feature dynamically updated HTML and CSS powered by jQuery.
-
-You'll need to use the [Day.js](https://day.js.org/en/) library to work with date and time. Be sure to read the documentation carefully and concentrate on using Day.js in the browser.
-
+>**Application Link:** [Work Day Scheduler](https://fannychen623.github.io/Challenge-05-Work-Day-Scheduler/)
+>
+>**View:** [Description](#description) / [Application Details](#application-details) / [Application Sample Video](#application-sample-video) / [Responsive Layout Example](#responsive-layout)
+>
+>**Site Preview:**
+>
+>![Work Day Scheduler](./assets/images/Work%20Day%20Scheduler.png "Work Day Scheduler")
+## **DESCRIPTION**
+> Topic Assessed: **Third-Party APIs** - **(bootstrap, jQuery, day.js, etc.)**
+### **My Task**
+*Work Day Scheduler* allows a user to save events for each standard business hour of the day.
+> Modify existing starter code. 
+>
+> Update HTML using bootstrap to create time blocks of standard business hours.
+> 
+> Add JavaScript and JQuery to save events to the local storage and render the events when the page is initialized.
+> 
+> Display the current date and color-code the time blocks by combining the use of the day.js library in the script.
+> 
 ## User Story
-
-```md
+```
 AS AN employee with a busy schedule
 I WANT to add important events to a daily planner
 SO THAT I can manage my time effectively
@@ -16,7 +28,7 @@ SO THAT I can manage my time effectively
 
 ## Acceptance Criteria
 
-```md
+```
 GIVEN I am using a daily planner to create a schedule
 WHEN I open the planner
 THEN the current day is displayed at the top of the calendar
@@ -32,69 +44,71 @@ WHEN I refresh the page
 THEN the saved events persist
 ```
 
-The following animation demonstrates the application functionality:
+## **APPLICATION DETAILS**
 
-<!-- @TODO: create ticket to review/update image) -->
-![A user clicks on slots on the color-coded calendar and edits the events.](./Assets/05-third-party-apis-homework-demo.gif)
+### HTML Information
+* **Head**: Added a `reset.css` file.
+* **Semantic Elements**: Renamed first `<div>` tags to `<main>` for a more indicative element.
+* **Bootstrap**: Duplicate bootstrap timeblocks for standard business hours.
+  * The id of each time block starts with the prefix "hour-" and ends with the hour (24 hour clock format).
+  * The text in the first column of the time block is the hour (12 hour clock format) followed by AM/PM. It is ordered from 9AM to 5PM (total of 9 time blocks).
+* **Files**: Moved CSS and JavaScript files into assets folder for path clarity/organization. 
+* **Comments**: Added indicative comments before each section.
 
-## Grading Requirements
+### CSS Information
+* **Comments**: Added indicative comments before selectors.
 
-> **Note**: If a Challenge assignment submission is marked as “0”, it is considered incomplete and will not count towards your graduation requirements. Examples of incomplete submissions include the following:
->
-> * A repository that has no code
->
-> * A repository that includes a unique name but nothing else
->
-> * A repository that includes only a README file but nothing else
->
-> * A repository that only includes starter code
+### JavaScript Information
+* **$(function () {code})**: Wrap all code that interacts with the DOM in a call to jQuery to ensure that the code isn't run until the browser has finished rendering all the elements in the html.
+* Define an empty array of `scheduledEvents` to be used to store existing and new events.
+* **Render Local Storage**: Get and define the array of events from the local storage.
+  * Define `storedEvents` as `JSON.parse(localStorage.getItem("scheduledEvents")` to render events from the local storage.
+  * If the `storedEvents` is not undefined/null, then define it as `scheduledEvents` to be used in populating the time block textareas.
+* **Display Current Date**: Use day.js to get the current day and display it in the header.
+  * Use a function to determine the ordinal (i.e. st, nd, rd, th) of the day of the month.
+    * **Referenced Code**: [JavaScript new Date Ordinal (st, nd, rd, th)](https://stackoverflow.com/questions/15397372/javascript-new-date-ordinal-st-nd-rd-th)
+  * Call the ordinal function with the day value and define the returned value as `Do`.
+    * Define the day value with day.js by using `Number(dayjs().format('d'))`.
+      * Use `format('d')` to return only the day value of the date of the local device.
+      * Use  `Number` to ensure that the value returned is recognized as a number value.
+  * Use jQuery to append the current date into the html header.
+    * Define the location (`id=currentDay`) of the html to enter the text with `$('#currentDay').text()`.
+    * Use day.js to get and format the current day: `(dayjs().format('dddd[,] MMMM D')) + Do`
+      * `dddd = full name of the day of the week`, `MMMM = full name of the month`, `D = day of the month`.
+        * **Source**: [Day.js Display Format](https://day.js.org/docs/en/display/format)
+      * Use brackets to enter string between the days ([,]).
+      * Add `Do` at the end for the ordinal of the day value.
+* **Color-code and Populate Time Blocks**: Use day.js, combined with jQuery to get the current hour to color-code and populate the time blocks.
+  * Define the day value with day.js by using `Number(dayjs().format('H'))`.
+      * Use `format('H')` to return only the hour value (24 hour clock format) of the date of the local device.
+      * Use  `Number` to ensure that the value returned is recognized as a number value.
+  * Loop through all sections with the class `time-blocks` with jQuery `$('.time-block').each(function() {})`
+    * Find the id of the current block and remove the prefix "hour-" so that only the ending hour (24 hour clock format) remains.
+      * Use the `replace` method to remove the prefix.
+    * Check if the hour of the current block is less than, greater than, or equal to the current hour.
+      * If it is less than the current hour, add the class `past` to the current block.
+      * If it is equal to the current hour, add the class `present` to the current block.
+      * If it is greater than the current hour, add the class `future` to the current block.
+      * The new class correspond to colors defined in the css which would color-code the time blocks.
+    * Initialize to empty array called `eventItem` in the case where `scheduledEvents` is undefined/empty.
+      * This is to prevent the error `Cannot read Property '0' of Undefined`.
+    * Populate the child element of this time block that is a textarea element with the stored event for this hour.
+      * Define the index of the array as `idHour-9` to get an index starting at 0 from the hour of the time block.
+      * Use jQuery to locate the child element that is a textarea, `$(this).children('textarea').val()`, to populate with the stored event.
+* **$('.saveBtn').on('click', function () {code})**: jQuery listener for click events on the save button.
+  * Define the index of the time block.
+    * Find the id of the parent element (in the format "hour-**").
+    * Replace the "hour-" prefix with blank "" to return only the hour value (24 hour format).
+    * Subtract 9 from the value to get the index of an array, starting at an index of 0.
+  * Replace the value of the defined index in the `scheduledEvents` array with the textarea value.
+    * Find the closest `time-block` class and find its' child element that is a textarea element.
+    * Replace the index value in the array `scheduledEvents` with the textarea value.
+  * Set the array item in the local storage and covert it as a string with `JSON.stringify`.
 
-This Challenge is graded based on the following criteria:
+## **APPLICATION SAMPLE VIDEO**
+### Sample Video
+>![Work Day Scheduler](./assets/images/Work%20Day%20Scheduler.gif "Work Day Scheduler")
 
-### Technical Acceptance Criteria: 40%
-
-* Satisfies all of the above acceptance criteria plus the following:
-
-  * Uses a date utility library to work with date and time
-
-### Deployment: 32%
-
-* Application deployed at live URL
-
-* Application loads with no errors
-
-* Application GitHub URL submitted
-
-* GitHub repo contains application code
-
-### Application Quality: 15%
-
-* Application user experience is intuitive and easy to navigate
-
-* Application user interface style is clean and polished
-
-* Application resembles the mock-up functionality provided in the Challenge instructions
-
-### Repository Quality: 13%
-
-* Repository has a unique name
-
-* Repository follows best practices for file structure and naming conventions
-
-* Repository follows best practices for class/id naming conventions, indentation, quality comments, etc.
-
-* Repository contains multiple descriptive commit messages
-
-* Repository contains quality README file with description, screenshot, and link to deployed application
-
-## Review
-
-You are required to submit the following for review:
-
-* The URL of the deployed application
-
-* The URL of the GitHub repository, with a unique name and a README describing the project
-
-- - -
-© 2022 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
-https://stackoverflow.com/questions/15397372/javascript-new-date-ordinal-st-nd-rd-th
+## **RESPONSIVE LAYOUT**
+### Screen Size: 650px
+>![Responsive Layout](./assets/images/650px.png "Responsive Layout")
