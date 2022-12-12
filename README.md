@@ -1,4 +1,4 @@
-# Module 03 Challenge - Unique Password Generator
+# Module 05 Challenge - Work Day Scheduler
 
 >**Application Link:** [Work Day Scheduler](https://fannychen623.github.io/Challenge-05-Work-Day-Scheduler/)
 >
@@ -8,7 +8,7 @@
 >
 >![Work Day Scheduler](./assets/images/Work%20Day%20Scheduler.png "Work Day Scheduler")
 ## **DESCRIPTION**
-> Topic Assessed: **Third-Party APIs** - **(bootstrap, jQuery, day.js, etc.)**
+> Topic Assessed: **Third-Party APIs** - **Bootstrap, jQuery, day.js, etc.**
 ### **My Task**
 *Work Day Scheduler* allows a user to save events for each standard business hour of the day.
 > Modify existing starter code. 
@@ -74,7 +74,7 @@ THEN the saved events persist
   * Use jQuery to append the current date into the html header.
     * Define the location (`id=currentDay`) of the html to enter the text with `$('#currentDay').text()`.
     * Use day.js to get and format the current day: `(dayjs().format('dddd[,] MMMM D')) + Do`
-      * `dddd = full name of the day of the week`, `MMMM = full name of the month`, `D = day of the month`.
+      * `dddd` = full name of the day of the week, `MMMM` = full name of the month, `D` = day of the month.
         * **Source**: [Day.js Display Format](https://day.js.org/docs/en/display/format)
       * Use brackets to enter string between the days ([,]).
       * Add `Do` at the end for the ordinal of the day value.
